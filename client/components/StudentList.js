@@ -1,5 +1,5 @@
 import React from 'react';
-import {fetchStudents} from '../redux/store';
+import {fetchStudents, deleteStudent} from '../redux/store';
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 
@@ -13,6 +13,7 @@ class StudentList extends React.Component {
   }
 
   render() {
+    console.log('thislistprops', this.props)
     return (
       <ul>
         {this.props.students.map((student) => (
@@ -21,6 +22,9 @@ class StudentList extends React.Component {
               <p>Name: {student.fullName}</p>
               <p>Email: {student.email}</p>
               <Link to={`/students/${student.id}`}>View Detail</Link>
+              <button 
+                onClick = {()=> this.props.toDeleteStudent(student.id)}
+               >Delete</button>
             </div>
           </li>
         ))}
@@ -34,8 +38,9 @@ const mapStateToProps = (state) => ({
   students: state.students
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  loadStudents: () => dispatch(fetchStudents())
+const mapDispatchToProps = (dispatch, {history}) => ({
+  loadStudents: () => dispatch(fetchStudents()),
+  toDeleteStudent: (id)=>dispatch(deleteStudent(id, history))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentList);
